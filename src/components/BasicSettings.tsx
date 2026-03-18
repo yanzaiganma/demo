@@ -39,6 +39,11 @@ export function BasicSettings() {
                 <p className="text-xs text-slate-500 mt-1">活动结束后保留展示的天数，期间不可打榜、抽奖。</p>
               </div>
               <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">筝筝日上新用户调控次数</label>
+                <input type="number" defaultValue="5" className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+                <p className="text-xs text-slate-500 mt-1">新用户参与筝筝日上抽奖的前N次触发特殊概率调控。</p>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">活动状态</label>
                 <select className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                   <option>未开始</option>
