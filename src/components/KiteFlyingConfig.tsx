@@ -5,19 +5,31 @@ import { cn } from '../lib/utils';
 export function KiteFlyingConfig() {
   const [activeTab, setActiveTab] = useState<'goldfish' | 'koi'>('goldfish');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPrize, setEditingPrize] = useState<any>(null);
+  const [deletingPrize, setDeletingPrize] = useState<any>(null);
 
   const mockPrizes = [
-    { id: 'g_001', poolName: '默认概率池', name: '春日风筝', qty: 1, prob: '10.0%', broadcast: true },
-    { id: 'g_002', poolName: '默认概率池', name: '一朵小花', qty: 10, prob: '90.0%', broadcast: false },
-    { id: 'g_003', poolName: '出水池', name: '一朵小花', qty: 5, prob: '100.0%', broadcast: false },
-    { id: 'g_001', poolName: '回血池', name: '春日风筝', qty: 2, prob: '50.0%', broadcast: true },
+    { id: 'g_001', poolName: '默认概率池', name: '春日风筝', prob: '10.0%', broadcast: true },
+    { id: 'g_002', poolName: '默认概率池', name: '一朵小花', prob: '90.0%', broadcast: false },
+    { id: 'g_003', poolName: '出水池', name: '一朵小花', prob: '100.0%', broadcast: false },
+    { id: 'g_001', poolName: '回血池', name: '春日风筝', prob: '50.0%', broadcast: true },
   ];
+
+  const openEditModal = (prize?: any) => {
+    setEditingPrize(prize || null);
+    setIsModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsModalOpen(false);
+    setEditingPrize(null);
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">筝筝日上配置</h1>
-        <p className="text-sm text-slate-500 mt-1">配置金鱼风筝和锦鲤风筝奖池的礼物内容及概率策略（仅限礼物）。</p>
+        <h1 className="text-2xl font-bold text-slate-900">筝筝日上配置 <span className="text-sm font-normal text-blue-600 bg-blue-50 px-2 py-1 rounded ml-2">应用概率奖池</span></h1>
+        <p className="text-sm text-slate-500 mt-2">配置金鱼风筝和锦鲤风筝奖池的礼物内容及概率策略（仅限礼物）。</p>
       </div>
 
       {/* 抽奖逻辑与奖池策略说明 */}
@@ -78,7 +90,7 @@ export function KiteFlyingConfig() {
             <h2 className="text-lg font-semibold text-slate-800">
               {activeTab === 'goldfish' ? '金鱼风筝' : '锦鲤风筝'} 礼物列表
             </h2>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors shadow-sm">
+            <button onClick={() => openEditModal()} className="flex items-center px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors shadow-sm">
               <Plus className="w-4 h-4 mr-1" /> 添加礼物
             </button>
           </div>
@@ -90,7 +102,6 @@ export function KiteFlyingConfig() {
                   <th className="px-4 py-3 font-medium">奖池名称</th>
                   <th className="px-4 py-3 font-medium">礼物ID</th>
                   <th className="px-4 py-3 font-medium">礼物名称</th>
-                  <th className="px-4 py-3 font-medium">数量</th>
                   <th className="px-4 py-3 font-medium">实际概率</th>
                   <th className="px-4 py-3 font-medium">跑马灯</th>
                   <th className="px-4 py-3 font-medium text-right">操作</th>
@@ -111,7 +122,6 @@ export function KiteFlyingConfig() {
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-500 font-mono">{prize.id}</td>
                     <td className="px-4 py-3 font-medium text-slate-900">{prize.name}</td>
-                    <td className="px-4 py-3 font-medium text-slate-700">x{prize.qty}</td>
                     <td className="px-4 py-3">
                       <span className="font-mono text-emerald-600 bg-emerald-50 px-2 py-1 rounded">{prize.prob}</span>
                     </td>
@@ -123,8 +133,8 @@ export function KiteFlyingConfig() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button className="text-blue-600 hover:text-blue-800 p-1"><Edit2 className="w-4 h-4" /></button>
-                      <button className="text-red-600 hover:text-red-800 p-1 ml-1"><Trash2 className="w-4 h-4" /></button>
+                      <button onClick={() => openEditModal(prize)} className="text-blue-600 hover:text-blue-800 p-1"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => setDeletingPrize(prize)} className="text-red-600 hover:text-red-800 p-1 ml-1"><Trash2 className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
@@ -138,13 +148,13 @@ export function KiteFlyingConfig() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
             <div className="flex justify-between items-center p-4 border-b border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-800">添加礼物</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <h3 className="text-lg font-semibold text-slate-800">{editingPrize ? '编辑礼物' : '添加礼物'}</h3>
+              <button onClick={closeEditModal} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">奖池选择</label>
-                <select className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <select defaultValue={editingPrize?.poolName || "默认概率池 (98%)"} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                   <option>默认概率池 (98%)</option>
                   <option>出水池 (95%)</option>
                   <option>回血池 (103%)</option>
@@ -153,35 +163,42 @@ export function KiteFlyingConfig() {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">礼物ID</label>
                 <div className="flex gap-2">
-                  <input type="text" placeholder="输入礼物ID" className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                  <input type="text" defaultValue={editingPrize?.id} placeholder="输入礼物ID" className="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
                   <button className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200">检索</button>
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">礼物名称 (自动带出)</label>
-                <input type="text" placeholder="自动带出礼物名称" disabled className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-500 cursor-not-allowed" />
+                <input type="text" defaultValue={editingPrize?.name} placeholder="自动带出礼物名称" disabled className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-500 cursor-not-allowed" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">单次产出数量</label>
-                  <input type="number" defaultValue="1" className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">实际概率 (%)</label>
-                  <input type="number" step="0.01" placeholder="例如: 10.0" className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">实际概率 (%)</label>
+                <input type="number" defaultValue={editingPrize?.prob?.replace('%', '')} step="0.01" placeholder="例如: 10.0" className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
               </div>
               <div>
                 <label className="flex items-center gap-2 cursor-pointer mt-2">
-                  <input type="checkbox" className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                  <input type="checkbox" defaultChecked={editingPrize?.broadcast} className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
                   <span className="text-sm font-medium text-slate-700">触发全服跑马灯广播</span>
                 </label>
                 <p className="text-xs text-slate-500 ml-6 mt-1">勾选后，抽中该礼物时将在全服顶部展示横幅广播。</p>
               </div>
             </div>
             <div className="p-4 border-t border-slate-200 flex justify-end gap-3 bg-slate-50">
-              <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50">取消</button>
-              <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700">保存</button>
+              <button onClick={closeEditModal} className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50">取消</button>
+              <button onClick={closeEditModal} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700">保存</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deletingPrize && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden p-6">
+            <h3 className="text-lg font-semibold text-slate-800 mb-2">确认删除</h3>
+            <p className="text-sm text-slate-600 mb-6">确定要删除‘{deletingPrize.name}’吗？</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setDeletingPrize(null)} className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50">取消</button>
+              <button onClick={() => setDeletingPrize(null)} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">确定</button>
             </div>
           </div>
         </div>
